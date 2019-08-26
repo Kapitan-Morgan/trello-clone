@@ -3,13 +3,17 @@
 // a relevant structure within app/javascript and only use these pack files to reference
 // that code so it'll be compiled.
 
-require("@rails/ujs").start()
+// require("@rails/ujs").start()
+export const Rails = require("@rails/ujs")
+console.log(Rails)
+Rails.start()
 require("turbolinks").start()
 require("@rails/activestorage").start()
 require("channels")
 
+import '../stylesheets/application'
 import Vue from 'vue/dist/vue.esm'
-import App from '../app.vue'
+import App from '../components/app.vue'
 import TurbolinksAdapter from 'vue-turbolinks';
 Vue.use(TurbolinksAdapter)
 console.log('hello');
