@@ -1,14 +1,13 @@
 <template>
-  <draggable v-model="lists" :options="{group: 'lists'}" class="main-cards dragArea" @end="listMoved">
+  <draggable v-model="lists" group='lists' class="main-cards dragArea" @end="listMoved">
     <div v-for="(list, index) in lists" class="col-3"> 
       <h4>{{ list.name }}</h4>
       <hr />
-
-      <div v-for="(card, index) in list.cards" class="lists">
-        <div class="list">
+      <draggable v-model="list.cards" group='cards' class="dragArea" @change="cardMoved">
+        <div v-for="(card, index) in list.cards" class="list">
           {{ card.name }}
         </div>
-      </div>
+      </draggable>
 
       <div class="card card-body">
         <textarea v-model="messages[list.id]" class="form-control"></textarea>
@@ -35,6 +34,29 @@ export default {
   },
 
   methods: {
+
+    cardMoved: function(event) {
+      const evt = event.added || event.moved
+      if (evt == undefined) { return }
+
+      const element = evt.element
+      const list_index = this.lists.findIndex((list) => {
+        return list.cards.find((card) => {
+          return card.id === element.id
+        })
+      })
+      
+      let data = new FormData
+      data.append("card[list_id]", this.lists[list_index].id)
+      data.append("card[position]", evt.newIndex + 1)
+
+      Rails.ajax({
+        url: `/cards/${element.id}/move`,
+        type: "PATCH",
+        data: data,
+        dataType: "json",
+      })
+    },
 
     listMoved: function(event) {
       let data = new FormData
