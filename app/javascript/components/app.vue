@@ -1,9 +1,9 @@
 <template>
   <draggable v-model="lists" group='lists' class="main-cards dragArea" @end="listMoved">
-    <div v-for="(list, index) in lists" class="col-3"> 
+    <div v-for="(list, index) in lists" class="col-3 list-wrapper"> 
       <h4>{{ list.name }}</h4>
       <hr />
-      <draggable v-model="list.cards" group='cards' class="dragArea" @change="cardMoved">
+      <draggable v-model="list.cards" group='cards' class="dragArea lists" @change="cardMoved">
         <div v-for="(card, index) in list.cards" class="list">
           {{ card.name }}
         </div>
@@ -94,22 +94,35 @@ export default {
 </script>
 
 <style scoped>
+.list-wrapper{
+  display: flex;
+  flex-direction: column;
+  background-color: #ebecf0;
+  border-radius: 3px;
+  margin: 5px 5px;
+}
 .main-cards{
   display: flex;
   flex-wrap: wrap;
+  align-items: baseline;
+  margin-top: 50px;
 }
 .card{
   flex: 1 0 21%; /* explanation below */
-  margin: 5px;
+  margin: 0 4px;
+  padding: 0 4px;
   height: 100px;
+  padding-bottom: 10px;
 }
 .lists{
-
+  margin: 0 4px;
+  padding: 0 4px;
 }
-.list{
-  border: 1px solid #b5b5b5;
-  padding: 20px;
-  border-radius: 10px;
+.list{ 
+  padding: 10px;
+  border-radius: 3px;
+  margin-bottom: 5px;
+  background-color: #fff;
 }
 hr {
   border: none; /* Убираем границу для браузера Firefox */
@@ -118,6 +131,7 @@ hr {
   height: 1px; /* Толщина линии */
 }
 h4{
+  padding: 10px 8px;
   margin: 0;
 }
 .row{
@@ -130,8 +144,7 @@ h4{
   margin-left: -15px;
 }
 .col-3{
-  flex: 0 0 25%;
-  margin: 0 20px;
+  flex: 0 0 calc(25% - 10px);
 }
 .col{
   flex-basis: 0;
