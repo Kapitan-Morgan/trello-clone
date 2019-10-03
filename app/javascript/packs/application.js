@@ -18,15 +18,17 @@ import TurbolinksAdapter from 'vue-turbolinks';
 Vue.use(TurbolinksAdapter)
 console.log('hello');
 
+window.store = {}
+
 document.addEventListener('turbolinks:load', () => {
     let element = document.querySelector('#boards')
     console.log(element);
     if (element != undefined) {
+        window.store.lists = JSON.parse(element.dataset.lists)
+
         const app = new Vue({
             el: element,
-            data: {
-                lists: JSON.parse(element.dataset.lists)
-            },
+            data: window.store,
             template: "<App :original_lists='lists' />",
             components: { App }
         })
