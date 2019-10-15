@@ -5,7 +5,7 @@
 
 // require("@rails/ujs").start()
 export const Rails = require("@rails/ujs")
-console.log(Rails)
+// console.log(Rails)
 Rails.start()
 require("turbolinks").start()
 require("@rails/activestorage").start()
@@ -13,16 +13,16 @@ require("channels")
 
 import '../stylesheets/application'
 import Vue from 'vue/dist/vue.esm'
-import App from '../components/app.vue'
+import App from '../app.vue'
 import TurbolinksAdapter from 'vue-turbolinks';
 Vue.use(TurbolinksAdapter)
-console.log('hello');
+// console.log('hello');
 
-window.store = {}
+window.store = {modal: false}
 
 document.addEventListener('turbolinks:load', () => {
     let element = document.querySelector('#boards')
-    console.log(element);
+    // console.log(element);
     if (element != undefined) {
         window.store.lists = JSON.parse(element.dataset.lists)
 

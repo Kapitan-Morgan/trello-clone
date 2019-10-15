@@ -1,23 +1,26 @@
+@import 'packs/modal';
+*, ::after, ::before {
+    box-sizing: border-box;
+}
 .container{
     max-width: 1200px;
     margin: 0 auto;
 }
-.card.card-body{ 
-    textarea{
-        display: block;
-        width: 100%;
-        padding: .375rem .75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        color: #495057;
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid #ced4da;
-        border-radius: .25rem;
-        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-        box-sizing: border-box;
-    }
+textarea{
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    box-sizing: border-box;
 }
+
 .btn{
     display: inline-block;
     font-weight: 400;
@@ -45,11 +48,47 @@
     flex-direction: column;
     align-items: center;
 }
-.btn:not(:disabled):not(.disabled) {
-    cursor: pointer;
-}
 .btn-secondary:hover {
     color: #fff;
     background-color: #5a6268;
     border-color: #545b62;
+}
+.link {} 
+.add-card {}
+.btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.btn-primary:hover {
+    color: #fff;
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+.btn:not(:disabled):not(.disabled) {
+    cursor: pointer;
+}
+
+.pointer-events {
+    pointer-events: none;
+}
+.modal-fade-enter-active, .modal-fade-leave-active {
+    transition: all 0.3s ease;   
+}
+.modal-fade-leave-active {
+    // transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    transform: translateY(-100px);
+    opacity: 0;
+}
+.modal-fade-enter, .slide-fade-leave-to
+    /* .slide-fade-leave-active до версии 2.1.8 */ {
+    transform: translateY(-100px);
+    opacity: 0;
+}
+
+.modal-backdrop-enter-active, .modal-backdrop-leave-active {
+    transition: opacity 0.3s ease;
+}
+.modal-backdrop-enter, .modal-backdrop-leave-to /* .fade-leave-active до версии 2.1.8 */ {
+    opacity: 0;
 }
