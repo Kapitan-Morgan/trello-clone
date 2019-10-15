@@ -4,36 +4,39 @@
     <h4>{{ list.name }}</h4>
     <hr />
     
-    <draggable v-model="list.cards" group='cards' class="dragArea lists" @change="cardMoved">
-      <div v-for="(card, index) in list.cards" class="list">
-        {{ card.name }}
-      </div>
+    <draggable :disabled="reversedMessage" v-model="list.cards" group='cards' class="dragArea cards" @change="cardMoved">
+      <card v-for="card in list.cards" :card="card" :list="list"></card>
     </draggable>
 
-    <div class="card card-body">
-      <a v-if="!editing" v-on:click="startEditing">Add a card</a>
+    <div class="list-body">
+      <a v-if="!editing" v-on:click="startEditing" class="link add-card">Add a card</a>
       <textarea v-if="editing" ref="message" v-model="message" class="form-control"></textarea>
-      <button v-if="editing" v-on:click="submitMessage(list.id)" class="btn btn-secondary">Add</button>
+      <button v-if="editing" v-on:click="submitMessage()" class="btn btn-secondary">Add</button>
       <a v-if="editing" v-on:click="editing=false">Cancel</a>
     </div>
-
   </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
+import card from 'components/card'
 import { Rails } from "packs/application.js"
   export default {
-    components: { draggable },
+    components: { card, draggable },
     props: ["list"],
 
     data: function() {
       return {
         editing: false,
-        message: ""
+        message: "",
+        status: window.store.modal
       }
     },
-    
+    computed: {
+      reversedMessage: function () {
+        return window.store.modal
+      }
+    },
     methods: {
       startEditing: function() {
         this.editing = true
@@ -64,8 +67,6 @@ import { Rails } from "packs/application.js"
       },
 
       submitMessage: function() {
-        // console.log(this.messages[list_id]);
-        console.log(this);
         let data = new FormData
         data.append("card[list_id]", this.list.id)
         data.append("card[name]", this.message)
@@ -88,29 +89,8 @@ import { Rails } from "packs/application.js"
 </script>
 
 <style scoped>
-.list-wrapper{
-  display: flex;
-  flex-direction: column;
-  background-color: #ebecf0;
-  border-radius: 3px;
-  margin: 5px 5px;
-}
-.card{
-  flex: 1 0 21%; /* explanation below */
-  margin: 0 4px;
-  padding: 0 4px;
-  height: 100px;
-  padding-bottom: 10px;
-}
-.lists{
-  margin: 0 4px;
-  padding: 0 4px;
-}
-.list{ 
-  padding: 10px;
-  border-radius: 3px;
-  margin-bottom: 5px;
-  background-color: #fff;
+.list-body {
+  padding: 1rem;
 }
 hr {
   border: none; /* Убираем границу для браузера Firefox */
