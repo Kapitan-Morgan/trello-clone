@@ -28,6 +28,7 @@ class ListsController < ApplicationController
 
     respond_to do |format|
       if @list.save
+        ActionCable.server.broadcast "board", {commit: 'addList', payload: render_to_string(template: "lists/show", formats: [:json])}
         format.html { redirect_to @list, notice: 'List was successfully created.' }
         format.json { render :show, status: :created, location: @list }
       else
@@ -42,6 +43,7 @@ class ListsController < ApplicationController
   def update
     respond_to do |format|
       if @list.update(list_params)
+        ActionCable.server.broadcast "board", {commit: 'editList', payload: render_to_string(template: "lists/show", formats: [:json])}
         format.html { redirect_to @list, notice: 'List was successfully updated.' }
         format.json { render :show, status: :ok, location: @list }
       else
@@ -63,6 +65,7 @@ class ListsController < ApplicationController
 
   def move
     @list.insert_at(list_params[:position].to_i)
+    ActionCable.server.broadcast "board", { commit: 'moveList', payload: render_to_string(template: "lists/show", formats: [:json]) }
     render action: :show
   end
 
