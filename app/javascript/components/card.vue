@@ -46,13 +46,13 @@ import { Rails } from "packs/application.js"
     },
     methods: {
       openModal: function() {
-        window.store.modal = true
+        this.$store.commit('changeModalStatus', true)
         toggleModal(this)
         this.$nextTick(() => { this.$refs.cardName.focus() })
       },
       closeModal: function() {
         if (event.target.classList.contains("modal")) {
-          window.store.modal = false
+          this.$store.commit('changeModalStatus', false)
           toggleModal(this)
         }
       },
@@ -66,10 +66,7 @@ import { Rails } from "packs/application.js"
           data: data,
           dataType: "json",
           success: (data) => {
-            const list_index = window.store.lists.findIndex((item) => item.id === this.list.id),
-                  card_index = window.store.lists[list_index].cards.findIndex((item) => item.id === this.card.id)
-            window.store.lists[list_index].cards.splice(card_index, 1, data)
-            window.store.modal = false
+            this.$store.commit('changeModalStatus', false)
             toggleModal(this)
           }
         })

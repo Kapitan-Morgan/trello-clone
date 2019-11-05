@@ -1,14 +1,16 @@
 <template>
-  <draggable :disabled="reversedMessage" v-model="lists" group='lists' class="main-cards dragArea" @end="listMoved">
-    <list v-for="(list, index) in lists" :list="list"></list>
+  <div class="board">
+    <draggable :disabled="modalState" v-model="lists" group='lists' class="main-cards dragArea" @end="listMoved">
+      <list v-for="(list, index) in lists" :list="list"></list>
+    </draggable>
 
     <div class="list-wrapper add-list col-3">
       <a v-if="!editing" v-on:click="startEditing" class="link add-card">Add a list</a>
       <textarea v-if="editing" ref="message" v-model="message" class="form-control"></textarea>
-      <button v-if="editing" v-on:click="submitMessage()" class="btn btn-secondary">Add</button>
+      <button v-if="editing" v-on:click="createList()" class="btn btn-secondary">Add</button>
       <a v-if="editing" v-on:click="editing=false">Cancel</a>
     </div>
-  </draggable>
+  </div>
 </template>
 
 <script>
@@ -18,19 +20,24 @@ import { Rails } from "packs/application.js"
 
 export default {
   components: { draggable, list},
-  props: ["original_lists"],
   
   data: function() {
     return {
-      status: window.store.modal,
-      lists: this.original_lists,
       editing: false,
       message: '',
     }
   },
   computed: {
-    reversedMessage: function () {
-      return window.store.modal
+    lists: {
+      get() {
+        return this.$store.state.lists
+      },
+      set(value) {
+        this.$store.state.lists = value
+      },
+    },
+    modalState: function () {
+      return this.$store.state.modalStatus
     }
   },
   methods: {
@@ -49,7 +56,7 @@ export default {
         dataType: "json",
       })
     },
-    submitMessage: function() {
+    createList: function() {
         let data = new FormData
         data.append("list[name]", this.message)
         Rails.ajax({
@@ -58,7 +65,6 @@ export default {
           data: data,
           dataType: "json",
           success: (data) => {
-            window.store.lists.push(data)
             this.message = ""
             this.editing = false
           }

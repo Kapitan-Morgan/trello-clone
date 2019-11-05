@@ -4,14 +4,14 @@
     <h4>{{ list.name }}</h4>
     <hr />
     
-    <draggable :disabled="reversedMessage" v-model="list.cards" group='cards' class="dragArea cards" @change="cardMoved">
+    <draggable :disabled="modalState" v-model="list.cards" group='cards' class="dragArea cards" @change="cardMoved">
       <card v-for="card in list.cards" :card="card" :list="list"></card>
     </draggable>
 
     <div class="list-body">
       <a v-if="!editing" v-on:click="startEditing" class="link add-card">Add a card</a>
       <textarea v-if="editing" ref="message" v-model="message" class="form-control"></textarea>
-      <button v-if="editing" v-on:click="submitMessage()" class="btn btn-secondary">Add</button>
+      <button v-if="editing" v-on:click="createCard()" class="btn btn-secondary">Add</button>
       <a v-if="editing" v-on:click="editing=false">Cancel</a>
     </div>
   </div>
@@ -33,8 +33,8 @@ import { Rails } from "packs/application.js"
       }
     },
     computed: {
-      reversedMessage: function () {
-        return window.store.modal
+      modalState: function () {
+        return this.$store.state.modalStatus
       }
     },
     methods: {
@@ -48,14 +48,14 @@ import { Rails } from "packs/application.js"
         if (evt == undefined) { return }
 
         const element = evt.element
-        const list_index = window.store.lists.findIndex((list) => {
+        const list_index = window.store.state.lists.findIndex((list) => {
           return list.cards.find((card) => {
             return card.id === element.id
           })
         })
         
         let data = new FormData
-        data.append("card[list_id]", window.store.lists[list_index].id)
+        data.append("card[list_id]", window.store.state.lists[list_index].id)
         data.append("card[position]", evt.newIndex + 1)
 
         Rails.ajax({
@@ -66,7 +66,7 @@ import { Rails } from "packs/application.js"
         })
       },
 
-      submitMessage: function() {
+      createCard: function() {
         let data = new FormData
         data.append("card[list_id]", this.list.id)
         data.append("card[name]", this.message)
@@ -77,8 +77,7 @@ import { Rails } from "packs/application.js"
           data: data,
           dataType: "json",
           success: (data) => {
-            const index = window.store.lists.findIndex(item => item.id == this.list.id)
-            window.store.lists[index].cards.push(data)
+            // this.$store.commit('addCard', data)
             this.message = ""
             this.$nextTick(() => { this.$refs.message.focus() })
           }
